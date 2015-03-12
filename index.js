@@ -16,11 +16,15 @@ socket.on('connection', function(client){
 	client.on('chat message', function(msg){
 		socket.emit('chat message', msg);
 	});
+	client.on('suicide', function(msg){
+		//We can do some external call here if we want
+		socket.emit('suicide', msg);
+	});
 	client.on("disconnect", function(){
-        socket.emit("chat message", people[client.id] + " has left the server.");
-        delete people[client.id];
-        socket.emit("update-people", people);
-    });
+    socket.emit("chat message", people[client.id] + " has left the server.");
+    delete people[client.id];
+    socket.emit("update-people", people);
+  });
 });
 
 http.listen(3000, function(){

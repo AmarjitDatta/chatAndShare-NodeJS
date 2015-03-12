@@ -77,12 +77,26 @@
 		socket.emit('join', person);
 		
 		$('form').submit(function(){
-			socket.emit('chat message', person + ': ' + $('#m').val());
+		  var chatMsg = $('#m').val();
+			if (chatMsg.toLowerCase().indexOf('suicide') > -1 && person.toLowerCase() != 'admin') {
+			  socket.emit('suicide', person + ': ' + $('#m').val());
+			}
+			else {
+			  socket.emit('chat message', person + ': ' + $('#m').val());
+			}			
 			$('#m').val('');
 			return false;
 		});
 		socket.on('chat message', function(msg){
 			$('#messages').append($('<li>').text(msg));
+		});
+		socket.on('suicide', function(msg){
+		  if (person.toLowerCase() == 'admin') {
+			  $('#messages').append($('<li style="color:red;">').text(msg));
+			}
+      else {
+			  $('#messages').append($('<li>').text(msg));
+      }			
 		});
 		socket.on('join', function(name){
 			$('#messages').append($('<li>').text(name + ' joined the chat room.'));
